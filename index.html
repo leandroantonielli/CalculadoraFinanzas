@@ -49,6 +49,27 @@
     letter-spacing: -0.01em;
     line-height: 1.1;
   }
+  .title-row{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .title-row h1{ margin: 0 0 10px; }
+  .cafecito-link{
+    display: inline-flex;
+    margin-bottom: 10px;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .cafecito-link:hover{ transform: translateY(-1px); opacity: 0.9; }
+  .cafecito-link img{
+    height: 40px;
+    width: auto;
+    display: block;
+  }
+  @media (max-width: 480px){
+    .cafecito-link img{ height: 34px; }
+  }
   header p{
     color: var(--paper-dim);
     max-width: 60ch;
@@ -202,6 +223,43 @@
   }
   .note.brecha{ background: rgba(92,184,125,0.06); border-color: rgba(92,184,125,0.15); }
 
+  .info-box{
+    background: var(--panel-2);
+    border: 1px solid var(--usd-dim);
+    border-radius: 9px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+  }
+  .info-box summary{
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--usd);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .info-box summary::-webkit-details-marker{ display:none; }
+  .info-box summary::before{
+    content: '▸';
+    font-size: 12px;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .info-box[open] summary::before{ transform: rotate(90deg); }
+  .info-box-body{
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--paper-dim);
+  }
+  .info-box-body p{ margin: 0 0 10px; }
+  .info-box-body p:last-child{ margin-bottom: 0; }
+  .info-box-body b{ color: var(--paper); }
+
   .quote-panel{
     background: var(--panel-2);
     border: 1px solid var(--line);
@@ -318,7 +376,12 @@
 
   <header>
     <p class="eyebrow">Herramientas / uso entre amigos</p>
-    <h1>Calculadora del Inversor</h1>
+    <div class="title-row">
+      <h1>Calculadora del Inversor</h1>
+      <a href="https://cafecito.app/leandroantonielli" rel="noopener" target="_blank" class="cafecito-link">
+        <img srcset="https://cdn.cafecito.app/imgs/buttons/button_5.png 1x, https://cdn.cafecito.app/imgs/buttons/button_5_2x.png 2x, https://cdn.cafecito.app/imgs/buttons/button_5_3.75x.png 3.75x" src="https://cdn.cafecito.app/imgs/buttons/button_5.png" alt="Invitame un café en cafecito.app">
+      </a>
+    </div>
     <p>Tres calculadoras rápidas para pensar decisiones de inversión en dólares y pesos. Los resultados son estimaciones basadas en los datos que cargues — no son garantía de rendimiento futuro ni asesoramiento financiero.</p>
   </header>
 
@@ -396,7 +459,17 @@
       <h2>2. Dólar Oficial + FCI vs. Dólar MEP + Obligación Negociable</h2>
       <span class="tag">Brecha cambiaria</span>
     </div>
-    <p class="sub">Compará dos caminos para el mismo monto en pesos: comprar dólar oficial y colocarlo en un FCI (con el cepo de 90 días), o comprar dólar MEP y colocarlo directo en una Obligación Negociable. Incluye comisiones de compra y venta.</p>
+    <p class="sub">Compará dos caminos para el mismo monto en pesos: comprar dólar oficial y colocarlo en un FCI en dólares, o comprar dólar MEP y colocarlo directo en una Obligación Negociable. Incluye comisiones de compra y venta.</p>
+
+    <details class="info-box" open>
+      <summary>¿Por qué comprar oficial e ir a un FCI está permitido? — la normativa del BCRA, en criollo</summary>
+      <div class="info-box-body">
+        <p>Desde el 26 de septiembre de 2025 rige la <b>Comunicación "A" 8336</b> del Banco Central, que reestableció la llamada "restricción cruzada" entre el dólar oficial y los dólares financieros (MEP y contado con liquidación).</p>
+        <p>En criollo: si comprás dólares al tipo de cambio oficial (el "dólar ahorro" del home banking), tenés que firmar una declaración jurada comprometiéndote a no comprar ni vender títulos que se liquidan en dólares —bonos, CEDEARs, dólar MEP o CCL— durante los <b>90 días corridos</b> siguientes. Y funciona también al revés: si primero operaste MEP o CCL, tampoco podés acceder al oficial en ese lapso. El objetivo declarado del BCRA es frenar el "rulo": comprar dólares baratos en el oficial para revenderlos más caros en el mercado financiero.</p>
+        <p><b>Lo que importa para esta calculadora:</b> esa restricción alcanza a la compraventa de títulos con liquidación en dólares, pero <b>no</b> a las cuotapartes de los Fondos Comunes de Inversión. Es decir, podés comprar dólar oficial y suscribir directamente un FCI en dólares sin esperar los 90 días, y también rescatarlo cuando quieras — no hay un lockup del fondo en sí. Donde sí te topás con la norma es si, con esos dólares (comprados o ya rescatados del fondo), querés operar en el mercado MEP/CCL antes de que se cumplan los 90 días desde la compra del oficial.</p>
+        <p class="field-note" style="margin-top:10px;">Fuente oficial: <a href="https://www.bcra.gob.ar/archivos/Pdfs/comytexord/A8336.pdf" target="_blank" style="color:var(--usd);">Comunicación "A" 8336, BCRA (PDF)</a>. Esto es un resumen simplificado y no reemplaza el asesoramiento de tu banco o broker sobre tu caso puntual.</p>
+      </div>
+    </details>
 
     <div class="grid">
       <div>
@@ -692,7 +765,7 @@
 
     verdict.classList.remove('warn');
     if(meses < 3){
-      mensaje += ` <br><br>⚠️ Ojo: con dólares comprados al oficial, la normativa vigente obliga a mantenerlos en un FCI un mínimo de 90 días (3 meses). Con un horizonte de ${meses} ${meses===1?'mes':'meses'} no podrías retirarlos antes de ese plazo por el camino A.`;
+      mensaje += ` <br><br>⚠️ Ojo: la restricción de 90 días del BCRA no te obliga a mantener la plata en el FCI (podés suscribir y rescatar cuando quieras). Lo que sí restringe es vender esos dólares vía MEP/CCL antes de los 90 días de haber comprado el oficial. Si en ${meses} ${meses===1?'mes':'meses'} pensás pasar esos dólares por el mercado financiero, todavía vas a estar dentro del plazo — mirá la leyenda de arriba para más detalle.`;
       verdict.classList.add('warn');
     }
     verdict.innerHTML = mensaje;
