@@ -402,6 +402,28 @@
     <p>Tres calculadoras rápidas para pensar decisiones de inversión en dólares y pesos. Los resultados son estimaciones basadas en los datos que cargues — no son garantía de rendimiento futuro ni asesoramiento financiero.</p>
   </header>
 
+  <div class="quote-panel">
+    <div class="quote-panel-head">
+      <span class="field-note" style="margin:0;">Cotizaciones en vivo · fuente: <a href="https://dolarapi.com" target="_blank" style="color:var(--usd);">dolarapi.com</a> · se actualiza sola cada 90 segundos</span>
+      <button type="button" id="c3-fetch-btn" class="btn-fetch">Actualizar cotizaciones</button>
+    </div>
+    <div class="quote-grid">
+      <div class="quote-stat">
+        <div class="label">Oficial</div>
+        <div class="value usd" id="q-oficial">–</div>
+      </div>
+      <div class="quote-stat">
+        <div class="label">MEP</div>
+        <div class="value usd" id="q-mep">–</div>
+      </div>
+      <div class="quote-stat">
+        <div class="label">CCL</div>
+        <div class="value usd" id="q-ccl">–</div>
+      </div>
+    </div>
+    <div class="field-note" id="c3-fetch-status">Sin actualizar todavía.</div>
+  </div>
+
   <nav class="tab-nav" role="tablist">
     <button type="button" class="tab-btn active" data-tab="1" role="tab" aria-selected="true">
       <span class="tab-num">1</span>
@@ -560,28 +582,6 @@
       <span class="tag">Punto de indiferencia</span>
     </div>
     <p class="sub">Si tenés pesos rindiendo una tasa (billetera virtual, plazo fijo, money market) cobrada a diario, ¿cuánto tiene que subir el dólar en ese mismo lapso para que te hubiera convenido estar en dólares en vez de en pesos?</p>
-
-    <div class="quote-panel">
-      <div class="quote-panel-head">
-        <span class="field-note" style="margin:0;">Cotizaciones en vivo · fuente: <a href="https://dolarapi.com" target="_blank" style="color:var(--usd);">dolarapi.com</a></span>
-        <button type="button" id="c3-fetch-btn" class="btn-fetch">Actualizar cotizaciones</button>
-      </div>
-      <div class="quote-grid">
-        <div class="quote-stat">
-          <div class="label">Oficial</div>
-          <div class="value usd" id="q-oficial">–</div>
-        </div>
-        <div class="quote-stat">
-          <div class="label">MEP</div>
-          <div class="value usd" id="q-mep">–</div>
-        </div>
-        <div class="quote-stat">
-          <div class="label">CCL</div>
-          <div class="value usd" id="q-ccl">–</div>
-        </div>
-      </div>
-      <div class="field-note" id="c3-fetch-status">Sin actualizar todavía.</div>
-    </div>
 
     <div class="grid">
       <div>
@@ -878,7 +878,12 @@
   );
 
   // ---------- COTIZACIONES EN VIVO (dolarapi.com) ----------
-  async function fetchCotizaciones(){
+  let ratesEditedByUser = false;
+  ['c2-oficial','c2-mep'].forEach(id =>
+    document.getElementById(id).addEventListener('input', () => { ratesEditedByUser = true; })
+  );
+
+  async function fetchCotizaciones(isManual){
     const btn = document.getElementById('c3-fetch-btn');
     const status = document.getElementById('c3-fetch-status');
     btn.disabled = true;
@@ -896,13 +901,17 @@
       if(mep) document.getElementById('q-mep').textContent = fmtARS(mep.venta);
       if(ccl) document.getElementById('q-ccl').textContent = fmtARS(ccl.venta);
 
-      // Autocompleta la calculadora 2 con oficial y MEP, si están disponibles
-      if(oficial){ document.getElementById('c2-oficial').value = oficial.venta; }
-      if(mep){ document.getElementById('c2-mep').value = mep.venta; }
-      calc2();
-
       const hora = new Date().toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
-      status.textContent = `Actualizado a las ${hora}. También se cargaron oficial y MEP en la calculadora 2.`;
+
+      // Autocompleta la calculadora 2 con oficial y MEP, salvo que ya los hayas tocado a mano
+      if(isManual || !ratesEditedByUser){
+        if(oficial){ document.getElementById('c2-oficial').value = oficial.venta; }
+        if(mep){ document.getElementById('c2-mep').value = mep.venta; }
+        calc2();
+        status.textContent = `Actualizado a las ${hora}. También se cargaron oficial y MEP en la calculadora 2.`;
+      } else {
+        status.textContent = `Actualizado a las ${hora}. No toqué oficial/MEP en la calculadora 2 porque los editaste a mano.`;
+      }
     } catch(err){
       status.textContent = 'No se pudo obtener la cotización automáticamente (puede ser un bloqueo del navegador si abriste el archivo directamente desde tu PC). Cargá los valores a mano, o subí este archivo a un hosting como GitHub Pages.';
     } finally {
@@ -910,12 +919,16 @@
       btn.textContent = 'Actualizar cotizaciones';
     }
   }
-  document.getElementById('c3-fetch-btn').addEventListener('click', fetchCotizaciones);
+  document.getElementById('c3-fetch-btn').addEventListener('click', () => fetchCotizaciones(true));
 
   calc1();
   calc2();
   calc3();
   calc3n();
+
+  // Primera carga automática y luego cada 90 segundos
+  fetchCotizaciones(false);
+  setInterval(() => fetchCotizaciones(false), 90000);
 
   // ---------- PESTAÑAS ----------
   const tabBtns = document.querySelectorAll('.tab-btn');
