@@ -274,6 +274,56 @@
   .info-box-body p:last-child{ margin-bottom: 0; }
   .info-box-body b{ color: var(--paper); }
 
+  .instrument-list{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .instrument-card{
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 14px 16px;
+  }
+  .instrument-head{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .instr-nombre{
+    flex: 1 1 180px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    color: var(--paper);
+    font-size: 14.5px;
+    font-weight: 500;
+    padding: 4px 2px 8px;
+  }
+  .instr-nombre:focus{ outline:none; border-bottom-color: var(--usd-dim); }
+  .instr-tipo{
+    flex: 1 1 220px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 7px 9px;
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+  }
+  .instrument-fields{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .instrument-fields label{ font-size: 11.5px; }
+  .instrument-fields input[type=number]{ font-size: 13.5px; padding: 8px 10px; }
+
+  #c4-tabla tr.best td{ color: var(--usd); }
+  #c4-tabla tr.best td:first-child::before{ content: '★ '; }
+
   .quote-panel{
     background: var(--panel-2);
     border: 1px solid var(--line);
@@ -439,6 +489,11 @@
       <span class="tab-num">3</span>
       <span class="tab-label-short">Pesos/USD</span>
       <span class="tab-label-full">Tasa en pesos vs. dólar</span>
+    </button>
+    <button type="button" class="tab-btn" data-tab="4" role="tab" aria-selected="false">
+      <span class="tab-num">4</span>
+      <span class="tab-label-short">Tasas $</span>
+      <span class="tab-label-full">Comparador de tasas en pesos</span>
     </button>
   </nav>
 
@@ -663,6 +718,171 @@
 
         <div class="verdict" id="c3n-verdict"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- CALCULADORA 4 -->
+  <section class="card tab-panel" data-panel="4">
+    <div class="card-head">
+      <h2>4. Comparador de tasas en pesos</h2>
+      <span class="tag">Hasta 5 opciones</span>
+    </div>
+    <p class="sub">Comparás hasta 3 billeteras/cuentas remuneradas, un plazo fijo y una letra al mismo tiempo, con el mismo monto y horizonte. Las billeteras se calculan con interés diario compuesto y respetan el tope (arriba del tope, el excedente no gana nada). El plazo fijo y la letra se calculan con interés simple a vencimiento, renovándose automáticamente si tu horizonte es más largo que su plazo.</p>
+
+    <div class="grid">
+      <div>
+        <label for="c4-monto">Monto a invertir (ARS)</label>
+        <input type="number" id="c4-monto" value="1000000" min="0" step="10000">
+      </div>
+      <div>
+        <label for="c4-horizonte">Horizonte a comparar (días)</label>
+        <input type="number" id="c4-horizonte" value="90" min="1" step="1">
+      </div>
+    </div>
+
+    <div class="instrument-list" id="c4-instrumentos">
+
+      <div class="instrument-card" data-idx="0">
+        <div class="instrument-head">
+          <input type="text" class="instr-nombre" value="Ualá">
+          <select class="instr-tipo">
+            <option value="cuenta" selected>Cuenta remunerada (diaria, con tope)</option>
+            <option value="pf">Plazo fijo (renovación)</option>
+            <option value="letra">Letra / LECAP (renovación)</option>
+          </select>
+        </div>
+        <div class="instrument-fields">
+          <div>
+            <label>Tasa anual (TNA %)</label>
+            <input type="number" class="instr-tasa" value="25" step="0.5">
+          </div>
+          <div class="field-tope">
+            <label>Tope sin interés extra (ARS)</label>
+            <input type="number" class="instr-tope" value="1000000" step="10000">
+            <div class="field-note">Dejá en 0 si no tiene tope.</div>
+          </div>
+          <div class="field-plazo" style="display:none;">
+            <label>Plazo del instrumento (días)</label>
+            <input type="number" class="instr-plazo" value="30" step="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="instrument-card" data-idx="1">
+        <div class="instrument-head">
+          <input type="text" class="instr-nombre" value="Billetera 2">
+          <select class="instr-tipo">
+            <option value="cuenta" selected>Cuenta remunerada (diaria, con tope)</option>
+            <option value="pf">Plazo fijo (renovación)</option>
+            <option value="letra">Letra / LECAP (renovación)</option>
+          </select>
+        </div>
+        <div class="instrument-fields">
+          <div>
+            <label>Tasa anual (TNA %)</label>
+            <input type="number" class="instr-tasa" value="20" step="0.5">
+          </div>
+          <div class="field-tope">
+            <label>Tope sin interés extra (ARS)</label>
+            <input type="number" class="instr-tope" value="4000000" step="10000">
+            <div class="field-note">Dejá en 0 si no tiene tope.</div>
+          </div>
+          <div class="field-plazo" style="display:none;">
+            <label>Plazo del instrumento (días)</label>
+            <input type="number" class="instr-plazo" value="30" step="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="instrument-card" data-idx="2">
+        <div class="instrument-head">
+          <input type="text" class="instr-nombre" value="Billetera 3 (opcional)">
+          <select class="instr-tipo">
+            <option value="cuenta" selected>Cuenta remunerada (diaria, con tope)</option>
+            <option value="pf">Plazo fijo (renovación)</option>
+            <option value="letra">Letra / LECAP (renovación)</option>
+          </select>
+        </div>
+        <div class="instrument-fields">
+          <div>
+            <label>Tasa anual (TNA %)</label>
+            <input type="number" class="instr-tasa" value="22" step="0.5">
+          </div>
+          <div class="field-tope">
+            <label>Tope sin interés extra (ARS)</label>
+            <input type="number" class="instr-tope" value="2000000" step="10000">
+            <div class="field-note">Dejá en 0 si no tiene tope.</div>
+          </div>
+          <div class="field-plazo" style="display:none;">
+            <label>Plazo del instrumento (días)</label>
+            <input type="number" class="instr-plazo" value="30" step="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="instrument-card" data-idx="3">
+        <div class="instrument-head">
+          <input type="text" class="instr-nombre" value="Plazo fijo tradicional">
+          <select class="instr-tipo">
+            <option value="cuenta">Cuenta remunerada (diaria, con tope)</option>
+            <option value="pf" selected>Plazo fijo (renovación)</option>
+            <option value="letra">Letra / LECAP (renovación)</option>
+          </select>
+        </div>
+        <div class="instrument-fields">
+          <div>
+            <label>Tasa anual (TNA %)</label>
+            <input type="number" class="instr-tasa" value="30" step="0.5">
+          </div>
+          <div class="field-tope" style="display:none;">
+            <label>Tope sin interés extra (ARS)</label>
+            <input type="number" class="instr-tope" value="0" step="10000">
+            <div class="field-note">Dejá en 0 si no tiene tope.</div>
+          </div>
+          <div class="field-plazo">
+            <label>Plazo del instrumento (días)</label>
+            <input type="number" class="instr-plazo" value="30" step="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="instrument-card" data-idx="4">
+        <div class="instrument-head">
+          <input type="text" class="instr-nombre" value="Letra (LECAP)">
+          <select class="instr-tipo">
+            <option value="cuenta">Cuenta remunerada (diaria, con tope)</option>
+            <option value="pf">Plazo fijo (renovación)</option>
+            <option value="letra" selected>Letra / LECAP (renovación)</option>
+          </select>
+        </div>
+        <div class="instrument-fields">
+          <div>
+            <label>Tasa anual (TNA %)</label>
+            <input type="number" class="instr-tasa" value="35" step="0.5">
+          </div>
+          <div class="field-tope" style="display:none;">
+            <label>Tope sin interés extra (ARS)</label>
+            <input type="number" class="instr-tope" value="0" step="10000">
+            <div class="field-note">Dejá en 0 si no tiene tope.</div>
+          </div>
+          <div class="field-plazo">
+            <label>Plazo del instrumento (días)</label>
+            <input type="number" class="instr-plazo" value="60" step="1">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="field-note" style="margin-bottom:18px;">Las tasas de este mockup son de ejemplo. Para tasas de billeteras y FCI actualizadas, mirá <a href="https://comparatasas.ar" target="_blank" style="color:var(--usd);">comparatasas.ar</a>.</div>
+
+    <div class="result-strip">
+      <table id="c4-tabla">
+        <thead><tr><th>Instrumento</th><th>TNA</th><th>Capital final</th><th>Ganancia</th><th>TNA efectiva realizada</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="verdict" id="c4-verdict"></div>
     </div>
   </section>
 
@@ -921,10 +1141,110 @@
   }
   document.getElementById('c3-fetch-btn').addEventListener('click', () => fetchCotizaciones(true));
 
+  // ---------- CALCULADORA 4: comparador de tasas en pesos ----------
+  function calc4(){
+    const monto = parseFloat(document.getElementById('c4-monto').value) || 0;
+    const horizonte = Math.max(1, parseFloat(document.getElementById('c4-horizonte').value) || 1);
+
+    const cards = document.querySelectorAll('#c4-instrumentos .instrument-card');
+    const filas = [];
+
+    cards.forEach(card => {
+      const nombre = card.querySelector('.instr-nombre').value.trim() || 'Sin nombre';
+      const tipo = card.querySelector('.instr-tipo').value;
+      const tasa = (parseFloat(card.querySelector('.instr-tasa').value) || 0) / 100;
+      if(tasa <= 0) return; // instrumento vacío/no usado, se omite
+
+      let final;
+      let tipoLabel;
+
+      if(tipo === 'cuenta'){
+        const topeRaw = parseFloat(card.querySelector('.instr-tope').value) || 0;
+        const tope = topeRaw > 0 ? topeRaw : Infinity;
+        const baseConInteres = Math.min(monto, tope);
+        const excedente = Math.max(0, monto - tope);
+        final = baseConInteres * Math.pow(1 + tasa/365, horizonte) + excedente;
+        tipoLabel = 'Cuenta remunerada';
+      } else {
+        const plazoInstr = Math.max(1, parseFloat(card.querySelector('.instr-plazo').value) || 30);
+        const renovaciones = Math.floor(horizonte / plazoInstr);
+        const resto = horizonte - renovaciones * plazoInstr;
+        const factor = Math.pow(1 + tasa * plazoInstr/365, renovaciones) * (1 + tasa * resto/365);
+        final = monto * factor;
+        tipoLabel = tipo === 'pf' ? 'Plazo fijo' : 'Letra / LECAP';
+      }
+
+      const ganancia = final - monto;
+      const tnaEfectiva = monto > 0 ? (Math.pow(final/monto, 365/horizonte) - 1) * 100 : 0;
+
+      filas.push({ nombre, tipoLabel, tasaPct: tasa*100, final, ganancia, tnaEfectiva });
+    });
+
+    filas.sort((a,b) => b.final - a.final);
+
+    const tbody = document.querySelector('#c4-tabla tbody');
+    if(filas.length === 0){
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--paper-dim);">Cargá al menos una tasa mayor a 0.</td></tr>`;
+      document.getElementById('c4-verdict').innerHTML = '';
+      return;
+    }
+
+    tbody.innerHTML = filas.map((f, i) => `
+      <tr class="${i===0 ? 'best' : ''}">
+        <td>${f.nombre}<br><span style="color:var(--paper-dim); font-size:11px;">${f.tipoLabel}</span></td>
+        <td>${f.tasaPct.toLocaleString('es-AR',{maximumFractionDigits:1})}%</td>
+        <td>${fmtARS(f.final)}</td>
+        <td>${fmtARS(f.ganancia)}</td>
+        <td>${f.tnaEfectiva.toLocaleString('es-AR',{maximumFractionDigits:2})}%</td>
+      </tr>`).join('');
+
+    const verdict = document.getElementById('c4-verdict');
+    verdict.classList.remove('warn');
+    const mejor = filas[0];
+    const peor = filas[filas.length - 1];
+    let mensaje = `<b>${mejor.nombre}</b> es la opción que más rinde en ${horizonte} días: terminás con ${fmtARS(mejor.final)}.`;
+    if(filas.length > 1){
+      const diff = mejor.final - peor.final;
+      mensaje += ` Eso es ${fmtARS(diff)} más que ${peor.nombre}, la opción que menos rindió.`;
+    }
+    // Aviso si algún instrumento con tope está diluyendo su tasa nominal
+    const diluidos = filas.filter(f => f.tnaEfectiva < f.tasaPct - 0.5);
+    if(diluidos.length > 0){
+      mensaje += ` <br><br>⚠️ Ojo: ${diluidos.map(f=>f.nombre).join(', ')} tiene una TNA nominal más alta que su rendimiento real (columna "TNA efectiva realizada") — es la señal de que tu monto superó el tope y parte de la plata quedó sin ganar interés.`;
+      verdict.classList.add('warn');
+    }
+    verdict.innerHTML = mensaje;
+  }
+
+  document.getElementById('c4-instrumentos').addEventListener('input', calc4);
+  document.getElementById('c4-instrumentos').addEventListener('change', calc4);
+  ['c4-monto','c4-horizonte'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calc4)
+  );
+
+  // Mostrar/ocultar campo de tope vs. plazo según el tipo de instrumento elegido
+  document.querySelectorAll('#c4-instrumentos .instr-tipo').forEach(select => {
+    const card = select.closest('.instrument-card');
+    const fieldTope = card.querySelector('.field-tope');
+    const fieldPlazo = card.querySelector('.field-plazo');
+    const toggle = () => {
+      if(select.value === 'cuenta'){
+        fieldTope.style.display = '';
+        fieldPlazo.style.display = 'none';
+      } else {
+        fieldTope.style.display = 'none';
+        fieldPlazo.style.display = '';
+      }
+    };
+    select.addEventListener('change', toggle);
+    toggle();
+  });
+
   calc1();
   calc2();
   calc3();
   calc3n();
+  calc4();
 
   // Primera carga automática y luego cada 90 segundos
   fetchCotizaciones(false);
