@@ -324,6 +324,16 @@
   #c4-tabla tr.best td{ color: var(--usd); }
   #c4-tabla tr.best td:first-child::before{ content: '★ '; }
 
+  #c4-tabla-concentrado tr.best td{ color: var(--usd); }
+  #c4-tabla-concentrado tr.best td:first-child::before{ content: '★ '; }
+  #c4-tabla-real tfoot td{
+    border-top: 1px solid var(--line);
+    border-bottom: none;
+    font-weight: 600;
+    color: var(--paper);
+    padding-top: 10px;
+  }
+
   .quote-panel{
     background: var(--panel-2);
     border: 1px solid var(--line);
@@ -725,15 +735,11 @@
   <section class="card tab-panel" data-panel="4">
     <div class="card-head">
       <h2>4. Comparador de tasas en pesos</h2>
-      <span class="tag">Hasta 5 opciones</span>
+      <span class="tag">Cartera repartida</span>
     </div>
-    <p class="sub">Comparás hasta 3 billeteras/cuentas remuneradas, un plazo fijo y una letra al mismo tiempo, con el mismo monto y horizonte. Las billeteras se calculan con interés diario compuesto y respetan el tope (arriba del tope, el excedente no gana nada). El plazo fijo y la letra se calculan con interés simple a vencimiento, renovándose automáticamente si tu horizonte es más largo que su plazo.</p>
+    <p class="sub">Cargá cuánto tenés puesto en cada instrumento (dejá en 0 el que no uses) y compará el resultado de tu cartera repartida contra la alternativa de concentrar todo en una sola opción. Las cuentas remuneradas se simulan día por día: mientras el saldo esté por debajo del tope, el interés se compone a diario; apenas cruza el tope, pasa a ganar interés simple solo sobre el monto del tope (así es como funcionan en la práctica). El plazo fijo y la letra se calculan con interés simple a vencimiento, renovándose automáticamente si el horizonte es más largo que su plazo.</p>
 
-    <div class="grid">
-      <div>
-        <label for="c4-monto">Monto a invertir (ARS)</label>
-        <input type="number" id="c4-monto" value="1000000" min="0" step="10000">
-      </div>
+    <div class="grid" style="max-width:260px;">
       <div>
         <label for="c4-horizonte">Horizonte a comparar (días)</label>
         <input type="number" id="c4-horizonte" value="90" min="1" step="1">
@@ -753,8 +759,12 @@
         </div>
         <div class="instrument-fields">
           <div>
+            <label>Monto asignado (ARS)</label>
+            <input type="number" class="instr-monto" value="1000000" step="10000">
+          </div>
+          <div>
             <label>Tasa anual (TNA %)</label>
-            <input type="number" class="instr-tasa" value="25" step="0.5">
+            <input type="number" class="instr-tasa" value="24" step="0.5">
           </div>
           <div class="field-tope">
             <label>Tope sin interés extra (ARS)</label>
@@ -770,7 +780,7 @@
 
       <div class="instrument-card" data-idx="1">
         <div class="instrument-head">
-          <input type="text" class="instr-nombre" value="Billetera 2">
+          <input type="text" class="instr-nombre" value="Carrefour Banco">
           <select class="instr-tipo">
             <option value="cuenta" selected>Cuenta remunerada (diaria, con tope)</option>
             <option value="pf">Plazo fijo (renovación)</option>
@@ -779,12 +789,16 @@
         </div>
         <div class="instrument-fields">
           <div>
+            <label>Monto asignado (ARS)</label>
+            <input type="number" class="instr-monto" value="3000000" step="10000">
+          </div>
+          <div>
             <label>Tasa anual (TNA %)</label>
             <input type="number" class="instr-tasa" value="20" step="0.5">
           </div>
           <div class="field-tope">
             <label>Tope sin interés extra (ARS)</label>
-            <input type="number" class="instr-tope" value="4000000" step="10000">
+            <input type="number" class="instr-tope" value="0" step="10000">
             <div class="field-note">Dejá en 0 si no tiene tope.</div>
           </div>
           <div class="field-plazo" style="display:none;">
@@ -804,6 +818,10 @@
           </select>
         </div>
         <div class="instrument-fields">
+          <div>
+            <label>Monto asignado (ARS)</label>
+            <input type="number" class="instr-monto" value="0" step="10000">
+          </div>
           <div>
             <label>Tasa anual (TNA %)</label>
             <input type="number" class="instr-tasa" value="22" step="0.5">
@@ -831,6 +849,10 @@
         </div>
         <div class="instrument-fields">
           <div>
+            <label>Monto asignado (ARS)</label>
+            <input type="number" class="instr-monto" value="0" step="10000">
+          </div>
+          <div>
             <label>Tasa anual (TNA %)</label>
             <input type="number" class="instr-tasa" value="30" step="0.5">
           </div>
@@ -857,6 +879,10 @@
         </div>
         <div class="instrument-fields">
           <div>
+            <label>Monto asignado (ARS)</label>
+            <input type="number" class="instr-monto" value="0" step="10000">
+          </div>
+          <div>
             <label>Tasa anual (TNA %)</label>
             <input type="number" class="instr-tasa" value="35" step="0.5">
           </div>
@@ -877,12 +903,24 @@
     <div class="field-note" style="margin-bottom:18px;">Las tasas de este mockup son de ejemplo. Para tasas de billeteras y FCI actualizadas, mirá <a href="https://comparatasas.ar" target="_blank" style="color:var(--usd);">comparatasas.ar</a>.</div>
 
     <div class="result-strip">
-      <table id="c4-tabla">
-        <thead><tr><th>Instrumento</th><th>TNA</th><th>Capital final</th><th>Ganancia</th><th>TNA efectiva realizada</th></tr></thead>
+      <h3 style="font-size:15px; margin:0 0 4px;">Tu cartera, tal como la repartiste</h3>
+      <p class="sub" style="margin-bottom:14px;">Solo se muestran los instrumentos con un monto asignado mayor a 0.</p>
+      <table id="c4-tabla-real">
+        <thead><tr><th>Instrumento</th><th>Monto</th><th>TNA</th><th>Capital final</th><th>Ganancia</th></tr></thead>
         <tbody></tbody>
+        <tfoot></tfoot>
       </table>
 
-      <div class="verdict" id="c4-verdict"></div>
+      <div style="margin-top:28px; padding-top:24px; border-top:1px dashed var(--line);">
+        <h3 style="font-size:15px; margin:0 0 4px;">¿Y si concentraras todo en una sola opción?</h3>
+        <p class="sub" style="margin-bottom:14px;">Mismo total invertido, puesto 100% en cada instrumento (usa la tasa y el tope/plazo que cargaste arriba, no el monto asignado).</p>
+        <table id="c4-tabla-concentrado">
+          <thead><tr><th>Instrumento</th><th>TNA</th><th>Capital final</th><th>TNA efectiva realizada</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="verdict" id="c4-verdict" style="margin-top:22px;"></div>
     </div>
   </section>
 
@@ -1142,75 +1180,130 @@
   document.getElementById('c3-fetch-btn').addEventListener('click', () => fetchCotizaciones(true));
 
   // ---------- CALCULADORA 4: comparador de tasas en pesos ----------
-  function calc4(){
-    const monto = parseFloat(document.getElementById('c4-monto').value) || 0;
-    const horizonte = Math.max(1, parseFloat(document.getElementById('c4-horizonte').value) || 1);
 
+  // Calcula el capital final de un instrumento dado un monto puntual
+  function calcularInstrumento(tipo, monto, tasa, tope, plazoInstr, horizonte){
+    if(monto <= 0 || tasa <= 0) return monto;
+
+    if(tipo === 'cuenta'){
+      const topeEfectivo = tope > 0 ? tope : Infinity;
+      let balance = monto;
+      // Simulación día por día: mientras el saldo esté bajo el tope compone,
+      // apenas lo cruza pasa a ganar interés simple solo sobre el tope.
+      for(let d = 0; d < horizonte; d++){
+        const baseInteres = Math.min(balance, topeEfectivo);
+        balance += baseInteres * tasa/365;
+      }
+      return balance;
+    } else {
+      const plazo = Math.max(1, plazoInstr || 30);
+      const renovaciones = Math.floor(horizonte / plazo);
+      const resto = horizonte - renovaciones * plazo;
+      const factor = Math.pow(1 + tasa * plazo/365, renovaciones) * (1 + tasa * resto/365);
+      return monto * factor;
+    }
+  }
+
+  function leerInstrumentos(){
     const cards = document.querySelectorAll('#c4-instrumentos .instrument-card');
-    const filas = [];
-
+    const instrumentos = [];
     cards.forEach(card => {
       const nombre = card.querySelector('.instr-nombre').value.trim() || 'Sin nombre';
       const tipo = card.querySelector('.instr-tipo').value;
+      const monto = parseFloat(card.querySelector('.instr-monto').value) || 0;
       const tasa = (parseFloat(card.querySelector('.instr-tasa').value) || 0) / 100;
-      if(tasa <= 0) return; // instrumento vacío/no usado, se omite
-
-      let final;
-      let tipoLabel;
-
-      if(tipo === 'cuenta'){
-        const topeRaw = parseFloat(card.querySelector('.instr-tope').value) || 0;
-        const tope = topeRaw > 0 ? topeRaw : Infinity;
-        const baseConInteres = Math.min(monto, tope);
-        const excedente = Math.max(0, monto - tope);
-        final = baseConInteres * Math.pow(1 + tasa/365, horizonte) + excedente;
-        tipoLabel = 'Cuenta remunerada';
-      } else {
-        const plazoInstr = Math.max(1, parseFloat(card.querySelector('.instr-plazo').value) || 30);
-        const renovaciones = Math.floor(horizonte / plazoInstr);
-        const resto = horizonte - renovaciones * plazoInstr;
-        const factor = Math.pow(1 + tasa * plazoInstr/365, renovaciones) * (1 + tasa * resto/365);
-        final = monto * factor;
-        tipoLabel = tipo === 'pf' ? 'Plazo fijo' : 'Letra / LECAP';
-      }
-
-      const ganancia = final - monto;
-      const tnaEfectiva = monto > 0 ? (Math.pow(final/monto, 365/horizonte) - 1) * 100 : 0;
-
-      filas.push({ nombre, tipoLabel, tasaPct: tasa*100, final, ganancia, tnaEfectiva });
+      const tope = parseFloat(card.querySelector('.instr-tope').value) || 0;
+      const plazo = parseFloat(card.querySelector('.instr-plazo').value) || 30;
+      const tipoLabel = tipo === 'cuenta' ? 'Cuenta remunerada' : (tipo === 'pf' ? 'Plazo fijo' : 'Letra / LECAP');
+      instrumentos.push({ nombre, tipo, tipoLabel, monto, tasa, tope, plazo });
     });
+    return instrumentos;
+  }
 
-    filas.sort((a,b) => b.final - a.final);
+  function calc4(){
+    const horizonte = Math.max(1, parseFloat(document.getElementById('c4-horizonte').value) || 1);
+    const instrumentos = leerInstrumentos();
 
-    const tbody = document.querySelector('#c4-tabla tbody');
-    if(filas.length === 0){
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--paper-dim);">Cargá al menos una tasa mayor a 0.</td></tr>`;
+    // ---- Tabla 1: tu cartera tal como la repartiste ----
+    const usados = instrumentos.filter(i => i.monto > 0 && i.tasa > 0);
+    const tbodyReal = document.querySelector('#c4-tabla-real tbody');
+    const tfootReal = document.querySelector('#c4-tabla-real tfoot');
+
+    if(usados.length === 0){
+      tbodyReal.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--paper-dim);">Asignale un monto mayor a 0 a por lo menos un instrumento.</td></tr>`;
+      tfootReal.innerHTML = '';
       document.getElementById('c4-verdict').innerHTML = '';
+      document.querySelector('#c4-tabla-concentrado tbody').innerHTML = '';
       return;
     }
 
-    tbody.innerHTML = filas.map((f, i) => `
-      <tr class="${i===0 ? 'best' : ''}">
+    let totalInvertido = 0, totalFinal = 0;
+    const filasReal = usados.map(i => {
+      const final = calcularInstrumento(i.tipo, i.monto, i.tasa, i.tope, i.plazo, horizonte);
+      const ganancia = final - i.monto;
+      totalInvertido += i.monto;
+      totalFinal += final;
+      return { ...i, final, ganancia };
+    });
+
+    tbodyReal.innerHTML = filasReal.map(f => `
+      <tr>
         <td>${f.nombre}<br><span style="color:var(--paper-dim); font-size:11px;">${f.tipoLabel}</span></td>
-        <td>${f.tasaPct.toLocaleString('es-AR',{maximumFractionDigits:1})}%</td>
+        <td>${fmtARS(f.monto)}</td>
+        <td>${(f.tasa*100).toLocaleString('es-AR',{maximumFractionDigits:1})}%</td>
         <td>${fmtARS(f.final)}</td>
         <td>${fmtARS(f.ganancia)}</td>
+      </tr>`).join('');
+
+    const gananciaTotal = totalFinal - totalInvertido;
+    tfootReal.innerHTML = `
+      <tr>
+        <td>Total cartera</td>
+        <td>${fmtARS(totalInvertido)}</td>
+        <td></td>
+        <td>${fmtARS(totalFinal)}</td>
+        <td>${fmtARS(gananciaTotal)}</td>
+      </tr>`;
+
+    // ---- Tabla 2: si concentraras todo el total en una sola opción ----
+    const filasConcentrado = instrumentos
+      .filter(i => i.tasa > 0)
+      .map(i => {
+        const final = calcularInstrumento(i.tipo, totalInvertido, i.tasa, i.tope, i.plazo, horizonte);
+        const tnaEfectiva = totalInvertido > 0 ? (Math.pow(final/totalInvertido, 365/horizonte) - 1) * 100 : 0;
+        return { ...i, final, tnaEfectiva };
+      })
+      .sort((a,b) => b.final - a.final);
+
+    const tbodyConc = document.querySelector('#c4-tabla-concentrado tbody');
+    tbodyConc.innerHTML = filasConcentrado.map((f, i) => `
+      <tr class="${i===0 ? 'best' : ''}">
+        <td>${f.nombre}<br><span style="color:var(--paper-dim); font-size:11px;">${f.tipoLabel}</span></td>
+        <td>${(f.tasa*100).toLocaleString('es-AR',{maximumFractionDigits:1})}%</td>
+        <td>${fmtARS(f.final)}</td>
         <td>${f.tnaEfectiva.toLocaleString('es-AR',{maximumFractionDigits:2})}%</td>
       </tr>`).join('');
 
+    // ---- Veredicto: cartera repartida vs. mejor opción concentrada ----
     const verdict = document.getElementById('c4-verdict');
     verdict.classList.remove('warn');
-    const mejor = filas[0];
-    const peor = filas[filas.length - 1];
-    let mensaje = `<b>${mejor.nombre}</b> es la opción que más rinde en ${horizonte} días: terminás con ${fmtARS(mejor.final)}.`;
-    if(filas.length > 1){
-      const diff = mejor.final - peor.final;
-      mensaje += ` Eso es ${fmtARS(diff)} más que ${peor.nombre}, la opción que menos rindió.`;
+    let mensaje = `Tu cartera repartida (${fmtARS(totalInvertido)} en total) termina en <b>${fmtARS(totalFinal)}</b> a los ${horizonte} días.`;
+
+    if(filasConcentrado.length > 0){
+      const mejorConcentrado = filasConcentrado[0];
+      const diff = totalFinal - mejorConcentrado.final;
+      if(diff >= 0){
+        mensaje += ` Repartida como la tenés, le ganás por ${fmtARS(diff)} a la mejor alternativa de concentrar todo en una sola opción (${mejorConcentrado.nombre}).`;
+      } else {
+        mensaje += ` Si en cambio hubieras puesto los ${fmtARS(totalInvertido)} enteros en <b>${mejorConcentrado.nombre}</b>, hubieras terminado con ${fmtARS(mejorConcentrado.final)} — ${fmtARS(Math.abs(diff))} más que repartida.`;
+        verdict.classList.add('warn');
+      }
     }
-    // Aviso si algún instrumento con tope está diluyendo su tasa nominal
-    const diluidos = filas.filter(f => f.tnaEfectiva < f.tasaPct - 0.5);
+
+    // Aviso de dilución por tope en la cartera real
+    const diluidos = filasReal.filter(f => f.tipo === 'cuenta' && f.tope > 0 && f.monto > f.tope);
     if(diluidos.length > 0){
-      mensaje += ` <br><br>⚠️ Ojo: ${diluidos.map(f=>f.nombre).join(', ')} tiene una TNA nominal más alta que su rendimiento real (columna "TNA efectiva realizada") — es la señal de que tu monto superó el tope y parte de la plata quedó sin ganar interés.`;
+      mensaje += ` <br><br>⚠️ Ojo: en ${diluidos.map(f=>f.nombre).join(', ')} pusiste más plata que el tope — la parte que lo supera deja de componerse a diario y solo suma interés simple sobre el tope.`;
       verdict.classList.add('warn');
     }
     verdict.innerHTML = mensaje;
@@ -1218,9 +1311,7 @@
 
   document.getElementById('c4-instrumentos').addEventListener('input', calc4);
   document.getElementById('c4-instrumentos').addEventListener('change', calc4);
-  ['c4-monto','c4-horizonte'].forEach(id =>
-    document.getElementById(id).addEventListener('input', calc4)
-  );
+  document.getElementById('c4-horizonte').addEventListener('input', calc4);
 
   // Mostrar/ocultar campo de tope vs. plazo según el tipo de instrumento elegido
   document.querySelectorAll('#c4-instrumentos .instr-tipo').forEach(select => {
